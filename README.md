@@ -44,7 +44,7 @@ The application will be deployed in a Docker Container on the Raspberry Pi. Dock
 docker run: command for starting a new Docker container  
 -d: run as a daemon  
 --name task_planner: gives the Docker container the name "task_planner"  
--p 3000:3000: exposes and publishes the port 3000, so that the application inside the container can be reached via port 3000 from outside of the coontainer.
+-p 3000:3000: exposes and publishes the port 3000, so that the application inside the container can be reached via port 3000 from outside of the coontainer.  
 task_planner: the name of the Docker image  
 
 ***
