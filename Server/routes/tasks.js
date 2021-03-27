@@ -6,7 +6,7 @@ const express = require("express");
 const router = express.Router();
 
 const Task = require("../model/Task");
-
+var ObjectID = require("mongodb").ObjectID;
 
 // Get all tasks from the DB.
 router.get("/", async (req, res) => {
@@ -21,9 +21,9 @@ router.get("/", async (req, res) => {
 
 // Inserting a task into the DB.
 router.post("/", (req, res) => {
-    console.log(req.body);
     const task = new Task({
-        title: req.body.title
+        title: req.body.title,
+        status: req.body.status
     });
     task.save()
     .then(data => {
@@ -39,9 +39,7 @@ router.post("/", (req, res) => {
 
 // Deleting a task from the DB
 router.delete("/", (req, res) => {
-    console.log(req.body);
-    const task = new Task(req.body);
-    task.delete()
+    Task.deleteOne({"_id": req.body.id})
     .then(data => {
         console.log("Deleting task.");
         res.json(data);
@@ -53,18 +51,21 @@ router.delete("/", (req, res) => {
 });
 
 
-// Updating a task in the DB.
-router.put("/", (req, res) => {
-    console.log(req.body);
-    Task.updateOne(req.body)
-    .then(data => {
-        console.log("Updating task.");
-        res.json(data);
-    })
-    .catch(err => {
+// Updating a task in the DB. First find the Task, then change the attributes accordingly and then update the task in the DB.
+router.put("/", async (req, res) => {
+    try {
+        const filter = { "_id": ObjectID(req.body.id) };
+        const options = { upsert: true };
+        let task = {
+            "title": req.body.title,
+            "status": req.body.status
+        };
+        await Task.updateOne(filter, {$set: task});
+        res.status(200);
+    } catch(err) {
         console.log(err);
-        res.status(500).json({ message: err});
-    });
+        res.status(500).json({message: err});
+    }
 });
 
 

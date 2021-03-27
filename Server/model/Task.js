@@ -6,6 +6,10 @@ const TaskSchema = mongoose.Schema({
     title: {
         type: String,
         required: true
+    },
+    status: {
+        type: String,
+        required: true
     }
     // description: String,
     // assignee: String
